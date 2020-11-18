@@ -11,4 +11,4 @@ YELLOW_COLOR=\033[1;33m
 
 build:
 	@echo "$(YELLOW_COLOR)=====\nBUILD\n=====$(NO_COLOR)"
-	go build -o uh-email-quota.bin -i src/main.go
+	go build -o plugin.bin -i src/main.go
