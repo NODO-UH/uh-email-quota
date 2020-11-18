@@ -16,6 +16,10 @@ type QuotaInfo struct {
 	Percentage float64
 }
 
+func (qi *QuotaInfo) String() string {
+	return fmt.Sprintf("%d/%d - %f\n", qi.Value, qi.Limit, qi.Percentage)
+}
+
 func ParseQuotaInfo(line_str string) (*QuotaInfo, error) {
 	lines := strings.Split(line_str, "\n")
 	if len(lines) < 2 {
@@ -32,15 +36,15 @@ func ParseQuotaInfo(line_str string) (*QuotaInfo, error) {
 		return nil, errors.New("unexpected output format")
 	}
 
-	value, err := strconv.Atoi(words[3])
+	value, err := strconv.Atoi(words[2])
 	if err != nil {
 		return nil, errors.New("unexpected output format in Value field")
 	}
-	limnit, err := strconv.Atoi(words[4])
+	limnit, err := strconv.Atoi(words[3])
 	if err != nil {
 		return nil, errors.New("unexpected output format in Limit field")
 	}
-	percentage, err := strconv.ParseFloat(words[5], 64)
+	percentage, err := strconv.ParseFloat(words[4], 64)
 	if err != nil {
 		return nil, errors.New("unexpected output format in % field")
 	}
@@ -53,19 +57,13 @@ func ParseQuotaInfo(line_str string) (*QuotaInfo, error) {
 
 func get_user_quota(user_name string) (*QuotaInfo, error) {
 	cmd := exec.Command("doveadm", "-f", "tab", "quota", "get", "-u", user_name)
-	fmt.Println(cmd.String())
 	cmd.Stderr = os.Stderr
 	out, err := cmd.Output()
 	if err != nil {
 		return nil, err
 	}
-	if err := cmd.Run(); err != nil {
-		return nil, err
-	}
 	out_str := string(out)
-	
 	return ParseQuotaInfo(out_str)
-
 }
 
 func main() {
