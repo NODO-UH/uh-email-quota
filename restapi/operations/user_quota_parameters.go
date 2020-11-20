@@ -33,6 +33,11 @@ type UserQuotaParams struct {
 
 	/*
 	  Required: true
+	  In: header
+	*/
+	XAPIKey string
+	/*
+	  Required: true
 	  In: query
 	*/
 	UserEmail strfmt.Email
@@ -49,6 +54,10 @@ func (o *UserQuotaParams) BindRequest(r *http.Request, route *middleware.Matched
 
 	qs := runtime.Values(r.URL.Query())
 
+	if err := o.bindXAPIKey(r.Header[http.CanonicalHeaderKey("X-API-Key")], true, route.Formats); err != nil {
+		res = append(res, err)
+	}
+
 	qUserEmail, qhkUserEmail, _ := qs.GetOK("userEmail")
 	if err := o.bindUserEmail(qUserEmail, qhkUserEmail, route.Formats); err != nil {
 		res = append(res, err)
@@ -57,6 +66,27 @@ func (o *UserQuotaParams) BindRequest(r *http.Request, route *middleware.Matched
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+// bindXAPIKey binds and validates parameter XAPIKey from header.
+func (o *UserQuotaParams) bindXAPIKey(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	if !hasKey {
+		return errors.Required("X-API-Key", "header", rawData)
+	}
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+
+	// Required: true
+
+	if err := validate.RequiredString("X-API-Key", "header", raw); err != nil {
+		return err
+	}
+
+	o.XAPIKey = raw
+
 	return nil
 }
 

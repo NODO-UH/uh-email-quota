@@ -4,6 +4,7 @@ produces:
 - application/json
 schemes:
 - http
+- https
 swagger: "2.0"
 info:
   description: Gestion Email Plugin
@@ -19,6 +20,10 @@ paths:
         format: email
         name: userEmail
         in: query
+        required: true
+      - type: string
+        name: X-API-Key
+        in: header
         required: true
       responses:
         "200":

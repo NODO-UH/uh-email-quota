@@ -10,6 +10,10 @@ paths:
           type: string
           format: email
           required: true
+        - in: header
+          name: X-API-Key
+          type: string
+          required: true
       responses:
         200:
           description: Ok

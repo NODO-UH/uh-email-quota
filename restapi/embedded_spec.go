@@ -25,7 +25,8 @@ func init() {
     "application/json"
   ],
   "schemes": [
-    "http"
+    "http",
+    "https"
   ],
   "swagger": "2.0",
   "info": {
@@ -44,6 +45,12 @@ func init() {
             "format": "email",
             "name": "userEmail",
             "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "X-API-Key",
+            "in": "header",
             "required": true
           }
         ],
@@ -103,7 +110,8 @@ func init() {
     "application/json"
   ],
   "schemes": [
-    "http"
+    "http",
+    "https"
   ],
   "swagger": "2.0",
   "info": {
@@ -122,6 +130,12 @@ func init() {
             "format": "email",
             "name": "userEmail",
             "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "X-API-Key",
+            "in": "header",
             "required": true
           }
         ],
