@@ -1,0 +1,21 @@
+paths:
+  /quota:
+    tags:
+      - quota
+    get:
+      operationId: userQuota
+      parameters:
+        - name: userEmail
+          in: query
+          type: string
+          format: email
+          required: true
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: "#/definitions/quota"
+        default:
+          description: error
+          schema:
+            $ref: "#/definitions/error"

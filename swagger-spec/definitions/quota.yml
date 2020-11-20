@@ -1,0 +1,12 @@
+definitions:
+  quota:
+    required:
+      - value
+      - limit
+    properties:
+      value:
+        type: integer
+        minimum: 0
+      limit:
+        type: integer
+        minimum: 0

@@ -1,0 +1,12 @@
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+basePath: /api
+swagger: "2.0"
+info:
+  description: Gestion Email Plugin
+  title: Gestion Email Plugin
+  version: 1.0.0
