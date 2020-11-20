@@ -4,6 +4,7 @@ produces:
 - application/json
 schemes:
 - http
+- https
 swagger: "2.0"
 info:
   description: Gestion Email Plugin
