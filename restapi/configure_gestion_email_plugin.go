@@ -5,7 +5,11 @@ package restapi
 import (
 	"crypto/tls"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
@@ -22,7 +26,24 @@ func configureFlags(api *operations.GestionEmailPluginAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
 
+func CheckAPIToken(key string) bool {
+	return key == os.Getenv("API_KEY")
+}
+
+func ValidateAPIToken(r *http.Request) bool {
+	ha := r.Header[http.CanonicalHeaderKey("X-API-Key")]
+	if len(ha) != 1 {
+		return false
+	}
+	return CheckAPIToken(ha[0])
+}
+
 func configureAPI(api *operations.GestionEmailPluginAPI) http.Handler {
+	// Load environmet variables
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal(err)
+	}
+
 	// configure the api here
 	api.ServeError = errors.ServeError
 
@@ -37,13 +58,17 @@ func configureAPI(api *operations.GestionEmailPluginAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	api.UserQuotaHandler = operations.UserQuotaHandlerFunc(func(params operations.UserQuotaParams) middleware.Responder {
-		user := params.UserEmail.String()
-		quota, err := quota.GetUserQuota(user)
-		if err != nil {
-			message := err.Error()
-			return operations.NewUserQuotaDefault(500).WithPayload(&models.Error{Code: 500, Message: &message})
+		if ValidateAPIToken(params.HTTPRequest) {
+			user := params.UserEmail.String()
+			quota, err := quota.GetUserQuota(user)
+			if err != nil {
+				message := err.Error()
+				return operations.NewUserQuotaDefault(500).WithPayload(&models.Error{Code: 500, Message: &message})
+			}
+			return operations.NewUserQuotaOK().WithPayload(&models.Quota{Value: &quota.Value, Limit: &quota.Limit})
 		}
-		return operations.NewUserQuotaOK().WithPayload(&models.Quota{Value: &quota.Value, Limit: &quota.Limit})
+		message := "invalid API Key"
+		return operations.NewUserQuotaDefault(400).WithPayload(&models.Error{Code: 400, Message: &message})
 	})
 
 	api.PreServerShutdown = func() {}
