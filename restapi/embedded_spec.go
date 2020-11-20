@@ -45,6 +45,12 @@ func init() {
             "name": "userEmail",
             "in": "query",
             "required": true
+          },
+          {
+            "type": "string",
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
@@ -122,6 +128,12 @@ func init() {
             "format": "email",
             "name": "userEmail",
             "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "X-API-Key",
+            "in": "header",
             "required": true
           }
         ],
