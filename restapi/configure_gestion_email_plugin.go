@@ -4,7 +4,6 @@ package restapi
 
 import (
 	"crypto/tls"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -15,9 +14,9 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/stdevAdrianPaez/uh-email-quota/models"
-	"github.com/stdevAdrianPaez/uh-email-quota/quota"
-	"github.com/stdevAdrianPaez/uh-email-quota/restapi/operations"
+	"github.com/NODO-UH/uh-email-quota/models"
+	"github.com/NODO-UH/uh-email-quota/quota"
+	"github.com/NODO-UH/uh-email-quota/restapi/operations"
 )
 
 //go:generate swagger generate server --target ../../uh-email-quota --name GestionEmailPlugin --spec ../swagger-spec/swagger.yml --principal interface{}
@@ -100,7 +99,7 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Printf("%s %s %s\n", r.RemoteAddr, r.Method, r.URL)
+		log.Printf("%s %s %s\n", r.RemoteAddr, r.Method, r.URL)
 		handler.ServeHTTP(w, r)
 	})
 }
