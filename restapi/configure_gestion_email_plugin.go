@@ -14,9 +14,9 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/stdevAdrianPaez/uh-email-quota/models"
-	"github.com/stdevAdrianPaez/uh-email-quota/quota"
-	"github.com/stdevAdrianPaez/uh-email-quota/restapi/operations"
+	"github.com/NODO-UH/uh-email-quota/models"
+	"github.com/NODO-UH/uh-email-quota/quota"
+	"github.com/NODO-UH/uh-email-quota/restapi/operations"
 )
 
 //go:generate swagger generate server --target ../../uh-email-quota --name GestionEmailPlugin --spec ../swagger-spec/swagger.yml --principal interface{}

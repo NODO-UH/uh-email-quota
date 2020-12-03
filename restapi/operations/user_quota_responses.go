@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/stdevAdrianPaez/uh-email-quota/models"
+	"github.com/NODO-UH/uh-email-quota/models"
 )
 
 // UserQuotaOKCode is the HTTP code returned for type UserQuotaOK

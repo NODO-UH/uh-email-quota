@@ -25,7 +25,7 @@ import (
 	flags "github.com/jessevdk/go-flags"
 	"golang.org/x/net/netutil"
 
-	"github.com/stdevAdrianPaez/uh-email-quota/restapi/operations"
+	"github.com/NODO-UH/uh-email-quota/restapi/operations"
 )
 
 const (
