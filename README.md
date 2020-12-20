@@ -1,50 +1,55 @@
-# Plugin Correo Estudiantes
+# uh-email-quota
 
-Plugin para brindar informacion acerca de las cuentas de correo de los estudiantes.
+## Description
 
-## Servicios API
+This microservice is designed to provide information on the consumption of space in the email given a given user, giving the space consumed and the maximum possible.
 
-- Consumo de la cuota de correo
+## Table of Contents
 
-## Compilando
+- [uh-email-quota](#uh-email-quota)
+  - [Description](#description)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+    - [Compiling](#compiling)
+    - [Release](#release)
+  - [Usage](#usage)
 
-Para generar un nuevo binario hay que compilar el proyecto. Para esto se ejecuta el comando:
+## Installation
 
-```bash
-make build
-```
+Quota Scraper is developed in the Go language, so one of the ways to install it is by compiling the source code, or by downloading any of the previously compiled releases.
 
-Con esto tenemos un nuevo binario con el nombre **plugin.bin**
+### Compiling
 
-## Ejecucion
+The only requirement to compile the code is to have Go. Once the repository is cloned and all the dependencies are in the `GOPATH`, it can be compiled from the file in`src/main.go`.
 
-El plugin debe estar en el servidor que contiene el servicio de correo, y con acceso a la ejecucion del comando `doveadm`. Ademas debe tener configurada la `API_KEY` como una variable de entorno en el archivo **.env**, el uso del archivo **.env** es obligatorio.
+### Release
 
-El contenido de la carpeta donde se ejecuta el plugin debe ser el siguiente:
+If you want to download a compilation directly, simply go to the releases in this repository and choose the desired version. If you can't find support for a certain architecture, feel free to open an issue to let us know.
 
-```
-plugin_folder
-|- .env
-|- plugin.bin
-|- cert.pem
-|- key.unencrypted.pem
-```
+## Usage
 
-- **.env** (*requerido*) archivo de configuracion de las variables de entorno
-- **plugin.bin** (*requerido*) binario o ejecutable
-- **cert.pem** solo es necesario si se va a utilizar el schema HTTPS
-- **key.unencrypted.pem** solo es necesario si se va a utilizar el schema HTTPS
+This microservice runs a REST API on port 8080, in addition, it requires the existence of the `doveadm` command, with which the consumption of each user is consulted. For security reasons, the header `X-API-Key` must be sent in each request with a unique key that only the administrator should know, the key is taken from the environment variable`EMAIL_QUOYA_API_KEY`.
 
-Si tenemos todo correcto, ejecutamos el plugin con el comando:
+For example, if you want to know the consumption of the user `user@domain.ext`. A request must be sent with the `GET` method and to the path`host:8080/quota?userEmail=user@domain.ext`, with the header `X-API-Key` containing the correct key. If the key matches the one stored in `EMAIL_QUOYA_API_KEY`, then we proceed to find the consumption using the`doveadm` command:
 
 ```bash
-./plugin.bin --tls-host HOST_IP --tls-port HOST_PORT --tls-key key.unencrypted.pem --tls-certificate cert.pem --scheme=https
+doveadm -f tab quota get -u user@domain.ext
 ```
 
-Donde `HOST_IP` es el IP del servidor y `HOST_PORT` es el puerto de escucha.
+Then it reads the output and returns the result through the REST API through a JSON of the form:
 
-Cualquier duda sobre el significado de los parametros, puede ver la eplicacion con el comando:
+```json
+{
+    "value": "consumed in bytes",
+    "limit": "limit in bytes"
+}
+```
 
-```bash
-./plugin.bin --help
+For example:
+
+```json
+{
+    "value": 1024,
+    "limit": 2048
+}
 ```
