@@ -1,2 +1,5 @@
 email-quota.bin
 .env
+vendor
+email_quota_x64.bin
+config.json
