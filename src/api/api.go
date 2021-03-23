@@ -3,8 +3,8 @@ package api
 import (
 	"fmt"
 	"net/http"
-	"os"
 
+	conf "github.com/NODO-UH/uh-email-quota/src/config"
 	"github.com/NODO-UH/uh-email-quota/src/quota"
 	"github.com/gin-gonic/gin"
 )
@@ -30,7 +30,8 @@ func authorizeAPIKey() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
 		// Check API Key
-		if apiKey != os.Getenv("EMAIL_QUOYA_API_KEY") {
+		configuration := conf.GetConfiguration()
+		if apiKey != *configuration.APIKey {
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
 	}
